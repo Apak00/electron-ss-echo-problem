@@ -5,3 +5,8 @@ How to Reproduce:
 - Second app to join the room will share it's screen with audio
 - Test echo problem on first pc while screen sharing on the second one
 - You will hear your voice back on the first pc
+
+How to run app:
+
+`npm i`
+`npm start`
