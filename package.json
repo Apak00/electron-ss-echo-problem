@@ -18,5 +18,9 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^13.1.5"
+  },
+  "dependencies": {
+    "socket.io": "^4.1.2",
+    "socket.io-client": "^4.1.2"
   }
 }
