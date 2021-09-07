@@ -1,4 +1,5 @@
 const { desktopCapturer } = require("electron");
+const { mergeAudioStreams } = require("./utils");
 
 const socket = io("https://webrtc-server-one.herokuapp.com", {
   path: "/socket.io",
@@ -25,11 +26,15 @@ const mediaConstraints = {
 let connection;
 let remoteSid;
 
+const pauseButton = document.getElementById("local-mic");
+const remoteVid = document.getElementById("remote-video");
+const localVid = document.getElementById("local-video");
+
+
 const createPeerConnection = () => {
   connection = new RTCPeerConnection(iceConfig);
   connection.onicecandidate = sendIceCandidate(remoteSid);
   connection.ontrack = (e) => {
-    const remoteVid = document.getElementById("remote-video");
     if (remoteVid) {
       remoteVid.srcObject = e.streams[0];
     }
@@ -77,6 +82,7 @@ socket.on("join:room:response", ({ alreadyConnectedSids }) => {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: {
             mandatory: {
+              echoCancellation: true,
               chromeMediaSource: "desktop",
             },
           },
@@ -86,14 +92,32 @@ socket.on("join:room:response", ({ alreadyConnectedSids }) => {
             },
           },
         });
-        const localVid = document.getElementById("local-video");
+        const micStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+          }
+        });
+        const micTrack = micStream.getTracks()[0];
+        micTrack.enabled = false;
 
+
+        pauseButton.onclick = function () {
+          const newState = !micTrack.enabled;
+
+          pauseButton.innerHTML = newState ? "&#x23F8;&#xFE0F;" : "&#x25B6;&#xFE0F;";
+          micTrack.enabled = newState
+        }
+
+        const mergedStream = mergeAudioStreams(micStream, stream)
+
+        const avdaStream = new MediaStream();
+
+        avdaStream.addTrack(stream.getVideoTracks()[0]);
+        avdaStream.addTrack(mergedStream.getAudioTracks()[0]);
+        avdaStream.getTracks().forEach((track) => connection.addTrack(track, stream));
         if (localVid) {
           localVid.srcObject = stream;
         }
-        stream
-          .getTracks()
-          .forEach((track) => connection.addTrack(track, stream));
       } catch (e) {
         console.error(e);
       }
@@ -101,6 +125,7 @@ socket.on("join:room:response", ({ alreadyConnectedSids }) => {
     });
   }
 });
+
 
 socket.on("offer:forward", ({ sdp, offererSid }) => {
   if (offererSid !== remoteSid) {
@@ -117,7 +142,6 @@ socket.on("offer:forward", ({ sdp, offererSid }) => {
       return navigator.mediaDevices.getUserMedia(mediaConstraints);
     })
     .then((stream) => {
-      const localVid = document.getElementById("local-video");
       if (localVid) {
         localVid.srcObject = stream;
       }
