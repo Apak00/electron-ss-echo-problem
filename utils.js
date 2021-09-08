@@ -9,8 +9,8 @@ const mergeAudioStreams = (desktopStream, voiceStream) => {
     const desktopGain = context.createGain();
     const voiceGain = context.createGain();
 
-    desktopGain.gain.value = 0.8;
-    voiceGain.gain.value = 0.8;
+    desktopGain.gain.value = 1;
+    voiceGain.gain.value = 1;
 
     source1.connect(desktopGain).connect(destination);
     // Connect source2
