@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <title>Hello World!</title>
-    <link rel="stylesheet" type="text/css" href="./styles.css">
 
-  </head>
-  <body>
-    <h4>To test this you need to run 2 instances of this app on different pcs</h4>
-    <h4>First app to join the room will share it's camera and voice</h4>
-    <h4>Second app to join the room will share it's screen with audio</h4>
-    <h4>Test echo problem on first pc while screen sharing on the second one</h4>
-    <h4>You will hear your voice back on the first pc</h4>
+<head>
+  <meta charset="UTF-8">
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <title>Hello World!</title>
+  <link rel="stylesheet" type="text/css" href="./styles.css">
 
-    <video id="local-video" autoplay muted></video>
-    <video id="remote-video" autoplay></video>
+</head>
 
-    <!-- You can also require other files to run in this process -->
+<body>
+  <h4>To test this you need to run 2 instances of this app on different pcs</h4>
+  <h4>First app to join the room will share it's camera and voice</h4>
+  <h4>Second app to join the room will share it's screen with audio</h4>
+  <h4>Test echo problem on first pc while screen sharing on the second one</h4>
+  <h4>You will hear your voice back on the first pc</h4>
 
-    <script src="./socket.io.min.js"></script>
-    <script src="./renderer.js"></script>
-  </body>
+  <video id="local-video" autoplay muted></video>
+  <button id="local-mic">&#x25B6;&#xFE0F;</button>
+  <video id="remote-video" autoplay></video>
+
+  <!-- You can also require other files to run in this process -->
+
+  <script src="./socket.io.min.js"></script>
+  <script src="./renderer.js"></script>
+</body>
+
 </html>
